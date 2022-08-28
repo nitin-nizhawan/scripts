@@ -36,7 +36,6 @@ branchChar=$(echo -e "\ue0a0")
 
 git_branch_name()
 {
-
 branch_name=$(get_branch_name)
 # concat current git branch
 if [ ${#branch_name} -gt 0 ] ; then
@@ -49,7 +48,7 @@ set_bash_prompt(){
 # user name
 PS1="$blueBack$endChar\u$endColor$blue$endChar$endColor"
 #concat working dir
-PS1="$PS1$greenBack$endChar\W$endColor$green$endChar$endColor"
+PS1="$PS1$greenBack$endChar\W/$endColor$green$endChar$endColor"
 PS1="$PS1$(git_branch_name) \n\$ "
 }
 
