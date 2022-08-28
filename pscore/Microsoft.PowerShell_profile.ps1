@@ -1,14 +1,45 @@
 
-# save this file to where  $PROFILE  variable points to in powershell
+
+function GetGitBranch($dir) {
+    if("$dir".length -lt 2){
+         return ""
+    }
+    $gitbranch = cat "$dir\.git\HEAD" | %{ $_.Split("refs/heads/")[1] }
+    if("$gitbranch".length -lt 1){
+         $parent = Split-Path $dir -Parent
+         return GetGitBranch $parent
+    }
+    return $gitbranch
+}
+
+function PrintFirstSegment($text, $color) {
+   Write-Host "$([char]0xe0b6)" -NoNewline -ForegroundColor $color -BackgroundColor Black 
+   Write-Host "$text" -ForegroundColor Black -BackgroundColor $color -NoNewline
+   Write-Host "$([char]0xe0b0)" -ForegroundColor $color -BackgroundColor Black -NoNewline
+}
+
+function PrintMiddleSegment($text, $color) {
+   Write-Host "$([char]0xe0b0)" -NoNewline -ForegroundColor Black -BackgroundColor $color
+   Write-Host "$text" -ForegroundColor Black -BackgroundColor $color -NoNewline
+   Write-Host "$([char]0xe0b0)" -ForegroundColor $color -BackgroundColor Black -NoNewline
+}
 
 function Prompt {
-   $dirName = Split-Path -Path $executionContext.SessionState.Path.CurrentLocation -Leaf 
+   $cwd = $executionContext.SessionState.Path.CurrentLocation
+   $dirName = Split-Path -Path $cwd -Leaf 
    $user = $env:UserName
-   Write-Host "[" -NoNewline 
-   Write-Host "$($dirName)" -NoNewline -ForegroundColor blue
-   Write-Host "]"  -NoNewline
+   PrintFirstSegment $user 1
+   PrintMiddleSegment "$dirName/" 2
+   $gitbranch = GetGitBranch $cwd
+  
+   if ( "$gitbranch".length -gt 0 ){
+      PrintMiddleSegment "$([char]0xe0a0)$gitbranch" 4
+   }
+
+
    "$("`n$ " * ($nestedPromptLevel + 1))"
-   
+
 }
+
 
 
