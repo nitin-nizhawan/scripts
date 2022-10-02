@@ -28,6 +28,7 @@ function Prompt {
    $cwd = $executionContext.SessionState.Path.CurrentLocation
    $dirName = Split-Path -Path $cwd -Leaf 
    $user = $env:UserName
+   $dateStr = Get-Date -Format 'HH:mm:ss'
    PrintFirstSegment $user 1
    PrintMiddleSegment "$dirName/" 2
    $gitbranch = GetGitBranch $cwd
@@ -36,7 +37,7 @@ function Prompt {
       PrintMiddleSegment "$([char]0xe0a0)$gitbranch" 4
    }
 
-
+   PrintMiddleSegment "$dateStr" 5
    "$("`n$ " * ($nestedPromptLevel + 1))"
 
 }
